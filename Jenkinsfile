@@ -7,19 +7,22 @@ pipeline {
     }
 
     environment {
-        IMAGE_NAME = "testme"
+        IMAGE_NAME = 'testme'
     }
 
     stages {
+
         stage('Checkout') {
             steps {
                 checkout scm
+                echo 'Source code checked out successfully!'
             }
         }
 
         stage('Test') {
             steps {
                 echo 'Running application tests...'
+                echo 'Tests completed!'
             }
         }
 
@@ -38,10 +41,11 @@ pipeline {
 
     post {
         success {
-            echo 'Docker image built successfully!'
+            echo 'Pipeline completed successfully!'
         }
+
         failure {
-            echo 'Pipeline failed. Check Console Output.'
+            echo 'Pipeline failed. Check the console output.'
         }
     }
 }
