@@ -48,4 +48,10 @@ pipeline {
             echo 'Pipeline failed. Check Console Output.'
         }
     }
+
+    stage('Checkout') {
+    steps {
+        checkout scm
+    }
+}
 }
