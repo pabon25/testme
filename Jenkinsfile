@@ -2,7 +2,6 @@
 pipeline {
     agent any
 
-    // Check GitHub every 2 minutes
     triggers {
         pollSCM('H/2 * * * *')
     }
@@ -12,11 +11,9 @@ pipeline {
     }
 
     stages {
-
         stage('Checkout') {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/pabon25/testme.git'
+                checkout scm
             }
         }
 
@@ -43,7 +40,6 @@ pipeline {
         success {
             echo 'Docker image built successfully!'
         }
-
         failure {
             echo 'Pipeline failed. Check Console Output.'
         }
