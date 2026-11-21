@@ -2,6 +2,11 @@
 pipeline {
     agent any
 
+    // Check GitHub every 2 minutes
+    triggers {
+        pollSCM('H/2 * * * *')
+    }
+
     environment {
         IMAGE_NAME = "testme"
     }
@@ -29,8 +34,18 @@ pipeline {
 
         stage('Verify Docker Image') {
             steps {
-                bat 'docker images'
+                bat 'docker images %IMAGE_NAME%'
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Docker image built successfully!'
+        }
+
+        failure {
+            echo 'Pipeline failed. Check Console Output.'
         }
     }
 }
