@@ -1,28 +1,4 @@
-<?php
-
-
-$host = "db";
-$user = "root";
-$password = "root123";
-$database = "school";
-
-$conn = new mysqli(
-    $host,
-    $user,
-    $password,
-    $database
-);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-echo "PHP Connected Successfully to MySQL!";
-
-
-
-
-?>
+<!--  -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
