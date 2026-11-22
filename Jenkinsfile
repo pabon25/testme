@@ -41,46 +41,57 @@ pipeline {
             }
         }
 
-       
-stage('Deploy to Spaceship') {
-    steps {
-        withCredentials([
-            sshUserPrivateKey(
-                credentialsId: 'spaceship-ssh',
-                keyFileVariable: 'SSH_KEY',
-                usernameVariable: 'SSH_USER'
-            )
-        ]) {
-            bat '''
-                echo Restricting SSH private key permissions...
+        stage('Deploy to Spaceship') {
+            steps {
+                withCredentials([
+                    sshUserPrivateKey(
+                        credentialsId: 'spaceship-ssh',
+                        keyFileVariable: 'SSH_KEY',
+                        usernameVariable: 'SSH_USER'
+                    )
+                ]) {
+                    bat '''
+                        echo Restricting SSH key permissions...
 
-                icacls "%SSH_KEY%" /inheritance:r /grant:r "%USERDOMAIN%\\%USERNAME%:R"
+                        icacls "%SSH_KEY%" /inheritance:r /grant:r "%USERDOMAIN%\\%USERNAME%:R"
 
-                if errorlevel 1 exit /b 1
+                        if errorlevel 1 exit /b 1
 
-                echo Uploading application to Spaceship...
+                        echo Creating deployment package...
 
-                if exist deployment.zip del /f /q deployment.zip
+                        if exist deployment.zip del /f /q deployment.zip
 
-                tar -a -c -f deployment.zip --exclude=.git --exclude=.env --exclude=.env.* --exclude=deployment.zip .
+                        tar -a -c -f deployment.zip --exclude=.git --exclude=.env --exclude=.env.* --exclude=deployment.zip .
 
-                if errorlevel 1 exit /b 1
+                        if errorlevel 1 exit /b 1
 
-                scp -i "%SSH_KEY%" -P %SSH_PORT% -o StrictHostKeyChecking=accept-new deployment.zip %SSH_USER%@%SERVER_IP%:%DEPLOY_DIR%/deployment.zip
+                        echo Uploading files to Spaceship...
 
-                if errorlevel 1 exit /b 1
+                        scp -i "%SSH_KEY%" -P %SSH_PORT% -o StrictHostKeyChecking=accept-new deployment.zip %SSH_USER%@%SERVER_IP%:%DEPLOY_DIR%/deployment.zip
 
-                echo Extracting application on Spaceship...
+                        if errorlevel 1 exit /b 1
 
-                ssh -i "%SSH_KEY%" -p %SSH_PORT% -o StrictHostKeyChecking=accept-new %SSH_USER%@%SERVER_IP% "unzip -o %DEPLOY_DIR%/deployment.zip -d %DEPLOY_DIR% && rm -f %DEPLOY_DIR%/deployment.zip"
+                        echo Extracting files on Spaceship...
 
-                if errorlevel 1 exit /b 1
+                        ssh -i "%SSH_KEY%" -p %SSH_PORT% -o StrictHostKeyChecking=accept-new %SSH_USER%@%SERVER_IP% "unzip -o %DEPLOY_DIR%/deployment.zip -d %DEPLOY_DIR% && rm -f %DEPLOY_DIR%/deployment.zip"
 
-                echo Deployment completed successfully!
-            '''
+                        if errorlevel 1 exit /b 1
+
+                        echo Spaceship deployment completed!
+                    '''
+                }
+            }
         }
     }
-}
 
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+            echo 'Application deployed to Spaceship!'
+        }
+
+        failure {
+            echo 'Pipeline failed. Check the console output.'
+        }
     }
 }
