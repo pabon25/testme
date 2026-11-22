@@ -1,26 +1,12 @@
 
 services:
-
   web:
     build: .
     container_name: php_app
     ports:
       - "8080:80"
-    depends_on:
-      - db
-
-  db:
-    image: mysql:8.4
-    container_name: mysql_db
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: root123
-      MYSQL_DATABASE: school
-    ports:
-      - "3307:3306"
     volumes:
-      - mysql_data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - sqlite_data:/var/www/html/data
 
 volumes:
-  mysql_data:
+  sqlite_data:
