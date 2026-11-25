@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STUDENT REGISTRATION</title>
+    <title>STUDENT REGISTRATION Portal</title>
 </head>
 <body>
+    <h1>Welcome To Our  Site </h1>
     <?php
     $message = '';
 
