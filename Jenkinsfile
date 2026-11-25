@@ -7,7 +7,7 @@ pipeline {
     }
 
     environment {
-        IMAGE_NAME = 'testme'
+        // IMAGE_NAME = 'testme'
         SERVER_IP = '66.29.148.173'
         SSH_PORT = '21098'
         DEPLOY_DIR = '/home/cjwfktusal/paccy.cypadi.com'
@@ -34,18 +34,18 @@ pipeline {
         }
 
         // 3. Build Docker image locally
-        stage('Build Docker Image') {
-            steps {
-                bat 'docker build -t %IMAGE_NAME%:%BUILD_NUMBER% .'
-            }
-        }
+        // stage('Build Docker Image') {
+        //     steps {
+        //         bat 'docker build -t %IMAGE_NAME%:%BUILD_NUMBER% .'
+        //     }
+        // }
 
-        // 4. Verify Docker image
-        stage('Verify Docker Image') {
-            steps {
-                bat 'docker images %IMAGE_NAME%'
-            }
-        }
+        // // 4. Verify Docker image
+        // stage('Verify Docker Image') {
+        //     steps {
+        //         bat 'docker images %IMAGE_NAME%'
+        //     }
+        // }
 
         // 5. Deploy PHP application to Spaceship cPanel
         stage('Deploy to Spaceship') {
